@@ -1,13 +1,20 @@
 pipeline {
-    agent { label 'linux' } // Chú ý: dùng dấu nháy đơn ' ' cho label là tốt nhất
-    options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '')
-        disableConcurrentBuilds()
-    }
+    agent any
+
     stages {
-        stage('Hello') {
+        stage('Build') {
             steps {
-                echo "hello"
+                echo 'Building..'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
             }
         }
     }
