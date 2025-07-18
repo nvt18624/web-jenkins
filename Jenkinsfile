@@ -25,8 +25,8 @@ pipeline {
     stage('Ansible Deploy') {
       steps {
         unstash 'env-file'
-        sh 'mv .env app/.env'
         sh '''
+          ls -al ./
           ls -al ./app
           cd ansible
           ansible-playbook ./playbooks/deploy.yml \
