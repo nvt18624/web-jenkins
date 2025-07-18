@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'tingy01052004/iac:v1.0.2'
+      args '-u root' 
+    }
+  }
 
   stages {
     stage('Init Vault Credentials') {
@@ -10,12 +15,9 @@ pipeline {
           string(credentialsId: 'VAULT_SECRET_ID', variable: 'VAULT_SECRET_ID')
         ]) {
           sh '''
-            apt-get update && apt-get install -y jq
-            echo $VAULT_ADDR
-            export "VAULT_ADDR=$VAULT_ADDR"
-            export "ROLE_ID=$VAULT_ROLE_ID"
-            export "SECRET_ID=$VAULT_SECRET_ID"
-
+            export VAULT_ADDR=$VAULT_ADDR
+            export ROLE_ID=$VAULT_ROLE_ID
+            export SECRET_ID=$VAULT_SECRET_ID
             chmod +x ./scripts/vault_login.sh
             ./scripts/vault_login.sh
           '''
@@ -26,6 +28,7 @@ pipeline {
     stage('Build') {
       steps {
         echo "Building app..."
+        // build command here
       }
     }
   }
