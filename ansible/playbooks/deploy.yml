@@ -1,0 +1,5 @@
+- name: Deploy Flask with secrets
+  hosts: web
+  become: true
+  roles:
+    - app
