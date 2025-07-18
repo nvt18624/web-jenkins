@@ -2,47 +2,35 @@ pipeline {
   agent any
 
   environment {
-    VAULT_ADDR      = credentials('VAULT_ADDR')
-    VAULT_ROLE_ID   = credentials('VAULT_ROLE_ID')
-    VAULT_SECRET_ID = credentials('VAULT_SECRET_ID')
+    VAULT_ADDR      = credentials('VAULT_ADDR')       // string credential
+    VAULT_ROLE_ID   = credentials('VAULT_ROLE_ID')    // string credential
+    VAULT_SECRET_ID = credentials('VAULT_SECRET_ID')  // string credential
   }
 
   stages {
 
-    stage('Vault Login') {
+    stage('Vault Login & Generate .env') {
       steps {
         sh '''
+          echo "[INFO] Logging into Vault and generating .env file..."
           chmod +x ./scripts/vault_login.sh
-          bash ./scripts/vault_login.sh "${VAULT_ADDR}" "${VAULT_ROLE_ID}" "${VAULT_SECRET_ID}"
+          ./scripts/vault_login.sh "${VAULT_ADDR}" "${VAULT_ROLE_ID}" "${VAULT_SECRET_ID}"
         '''
       }
     }
 
-
-    stage('Install Requirements') {
-      steps {
-        sh '''
-          apt-get update
-          apt-get install -y python3 python3-venv
-          python3 -m venv venv
-          source .env
-          source venv/bin/activate
-          pip install -r requirements.txt
-        '''
-      }
-    }
-
-    stage('Run Ansible Deploy') {
+    stage('Ansible Deploy') {
       steps {
         ansiColor('xterm') {
           ansiblePlaybook(
-              playbook: './ansible/playbooks/deploy.yml',
-              inventory: './ansible/inventories/webs.ini',
-              credentialsId: 'ANSIBLE_SSH_KEY',
-              colorized: true)
-      }}
+            playbook: './ansible/playbooks/deploy.yml',
+            inventory: './ansible/inventories/webs.ini',
+            credentialsId: 'ANSIBLE_SSH_KEY',
+            colorized: true
+          )
+        }
+      }
     }
-
   }
 }
 
