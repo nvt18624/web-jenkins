@@ -10,11 +10,10 @@ pipeline {
           string(credentialsId: 'VAULT_SECRET_ID', variable: 'VAULT_SECRET_ID')
         ]) {
           sh '''
-            ls -l ./scripts
-            cat ./scripts/vault_login.sh
-            echo "VAULT_ADDR=$VAULT_ADDR"
-            echo "ROLE_ID=$VAULT_ROLE_ID"
-            echo "SECRET_ID=$VAULT_SECRET_ID"
+            echo $VAULT_ADDR
+            export "VAULT_ADDR=$VAULT_ADDR"
+            export "ROLE_ID=$VAULT_ROLE_ID"
+            export "SECRET_ID=$VAULT_SECRET_ID"
 
             chmod +x ./scripts/vault_login.sh
             ./scripts/vault_login.sh
