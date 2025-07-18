@@ -15,9 +15,6 @@ pipeline {
           echo "[INFO] Logging into Vault and generating .env file..."
           chmod +x ./scripts/vault_login.sh
           ./scripts/vault_login.sh "${VAULT_ADDR}" "${VAULT_ROLE_ID}" "${VAULT_SECRET_ID}"
-          ls -al ./app
-          ls -al ./
-          ls -al /scripts
         '''
         stash includes: 'app/.env', name: 'env-file'
       }
@@ -28,6 +25,7 @@ pipeline {
         unstash 'env-file'
         sh 'mv .env app/.env'
         sh '''
+          ls -al ./app
           cd ansible
           ansible-playbook ./playbooks/deploy.yml \
             -i ./inventories/webs.ini \
