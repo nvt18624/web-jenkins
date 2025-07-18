@@ -12,8 +12,8 @@ pipeline {
     stage('Vault Login') {
       steps {
         sh '''
-          chmod +x ansible/scripts/vault-login.sh
-          ./ansible/scripts/vault-login.sh "${VAULT_ADDR}" "${VAULT_ROLE_ID}" "${VAULT_SECRET_ID}"
+          chmod +x ./scripts/vault_login.sh
+          bash ./scripts/vault_login.sh "${VAULT_ADDR}" "${VAULT_ROLE_ID}" "${VAULT_SECRET_ID}"
         '''
       }
     }
