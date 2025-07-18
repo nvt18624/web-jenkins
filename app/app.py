@@ -42,7 +42,7 @@ def login():
             return redirect('/')
         else:
             return 'Login Failed'
-    return render_template('./templates/login.html')
+    return render_template('login.html')
 
 
 @app.route('/logout')

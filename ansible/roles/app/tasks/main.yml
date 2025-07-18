@@ -58,13 +58,6 @@
     systemctl enable flask-app
     systemctl restart flask-app
 
-- name: Đặt quyền cho socket file
-  file:
-    path: /opt/flask-app/flask.sock
-    owner: www-data
-    group: www-data
-    mode: '0660'
-
 - name: Cấu hình Nginx reverse proxy
   copy:
     dest: /etc/nginx/sites-available/flask-app
