@@ -22,6 +22,8 @@ pipeline {
     stage('Install Requirements') {
       steps {
         sh '''
+          apt-get update
+          apt-get install -y python3 python3-venv
           python3 -m venv venv
           source .env
           source venv/bin/activate
