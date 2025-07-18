@@ -15,6 +15,8 @@ pipeline {
           echo "[INFO] Logging into Vault and generating .env file..."
           chmod +x ./scripts/vault_login.sh
           ./scripts/vault_login.sh "${VAULT_ADDR}" "${VAULT_ROLE_ID}" "${VAULT_SECRET_ID}"
+          ls -al ./
+          ls -al ./app/
         '''
         stash includes: 'app/.env', name: 'env-file'
       }
