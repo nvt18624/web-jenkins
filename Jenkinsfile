@@ -21,16 +21,13 @@ pipeline {
 
     stage('Ansible Deploy') {
       steps {
-        ansiColor('xterm') {
-          ansiblePlaybook(
-            playbook: './ansible/playbooks/deploy.yml',
-            inventory: './ansible/inventories/webs.ini',
-            credentialsId: 'ANSIBLE_SSH_KEY',
-            colorized: true
-          )
-        }
+        ansiblePlaybook(
+          playbook: './ansible/playbooks/deploy.yml',
+          inventory: './ansible/inventories/webs.ini',
+          credentialsId: 'ANSIBLE_SSH_KEY',
+          colorized: true
+        )
       }
     }
   }
 }
-
