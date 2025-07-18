@@ -5,6 +5,8 @@ pipeline {
     VAULT_ADDR      = credentials('VAULT_ADDR')       // string credential
     VAULT_ROLE_ID   = credentials('VAULT_ROLE_ID')    // string credential
     VAULT_SECRET_ID = credentials('VAULT_SECRET_ID')  // string credential
+    PRIVATE_KEY = credentials('GG_CLOUD_PRIVATE')  // string credential
+    WORKSPACE = "./ansible/"
   }
 
   stages {
@@ -21,12 +23,14 @@ pipeline {
 
     stage('Ansible Deploy') {
       steps {
-        ansiblePlaybook(
-          playbook: './ansible/playbooks/deploy.yml',
-          inventory: './ansible/inventories/webs.ini',
-          credentialsId: 'ANSIBLE_SSH_KEY',
-          colorized: true
-        )
+        sh '''
+          cd ansible
+          ansible-playbook ./playbooks/deploy.yml \
+              -i ./inventories/webs.ini \
+              --private-key $PRIVATE_KEY \
+        '''
+
+
       }
     }
   }

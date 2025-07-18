@@ -18,7 +18,7 @@
 
 - name: Copy Flask app lên server
   copy:
-    src: ../app/
+    src: ../../../../app
     dest: /opt/flask-app/
     owner: www-data
     group: www-data
@@ -32,6 +32,7 @@
     pip install -r requirements.txt
   args:
     chdir: /opt/flask-app/
+    executable: /bin/bash
 
 - name: Tạo systemd service cho Gunicorn
   copy:
