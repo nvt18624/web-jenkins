@@ -6,8 +6,7 @@ import psycopg2
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
-
-load_dotenv('.env')  
+load_dotenv('.env')
 
 
 def get_db_connection():
@@ -41,7 +40,8 @@ def login():
             session['user'] = username
             return redirect('/')
         else:
-            return 'Login Failed'
+            error = "Sai tên đăng nhập hoặc mật khẩu."
+            return render_template('login.html', error=error)
     return render_template('login.html')
 
 
@@ -49,3 +49,7 @@ def login():
 def logout():
     session.pop('user', None)
     return redirect('/login')
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
