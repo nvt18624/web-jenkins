@@ -18,12 +18,14 @@ DB_NAME=$(echo $SECRETS | jq -r '.data.data.database')
 DB_HOST=10.0.1.3
 
 # Write to .env file
-cat <<EOF > ../app/.env
+cat <<EOF > .env
 db_user=$DB_USER
 db_password=$DB_PASS
 db_name=$DB_NAME
 db_host=$DB_HOST
 EOF
 
-echo "[*] Secrets written to app/.env"
+ls -al ./scripts
+
+echo "[*] Secrets written to .env"
 
