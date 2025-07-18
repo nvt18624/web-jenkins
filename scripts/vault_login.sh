@@ -4,6 +4,8 @@ RESPONSE=$(curl -k -s --request POST \
   --data "{\"role_id\":\"$VAULT_ROLE_ID\", \"secret_id\":\"$VAULT_SECRET_ID\"}" \
   "$VAULT_ADDR/v1/auth/approle/login")
 
+echo "[DEBUG] Vault login response: $RESPONSE"
+
 # Extract client token
 VAULT_TOKEN=$(echo $RESPONSE | jq -r '.auth.client_token')
 echo $VAULT_TOKEN

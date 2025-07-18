@@ -10,6 +10,7 @@ pipeline {
           string(credentialsId: 'VAULT_SECRET_ID', variable: 'VAULT_SECRET_ID')
         ]) {
           sh '''
+            apt-get update && apt-get install -y jq
             echo $VAULT_ADDR
             export "VAULT_ADDR=$VAULT_ADDR"
             export "ROLE_ID=$VAULT_ROLE_ID"
