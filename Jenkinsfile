@@ -34,31 +34,32 @@ pipeline {
             mkdir -p ~/.ssh
             chmod 700 ~/.ssh
 
-            # Viết nội dung file config SSH
-            cat > ~/.ssh/config <<EOF
-                Host bastion
-                  HostName 34.66.23.89
-                  User tn18624
-                  IdentityFile $KEY_FILE
-                  StrictHostKeyChecking no
-                  UserKnownHostsFile=/dev/null
+            echo "[INFO] Writing SSH config..."
+            cat << EOF > ~/.ssh/config
+        Host bastion
+          HostName 34.66.23.89
+          User tn18624
+          IdentityFile $KEY_FILE
+          StrictHostKeyChecking no
+          UserKnownHostsFile=/dev/null
 
-                Host 10.0.2.*
-                  User tn18624
-                  IdentityFile $KEY_FILE
-                  ProxyJump bastion
-                  StrictHostKeyChecking no
-                  UserKnownHostsFile=/dev/null
-                EOF
+        Host 10.0.2.*
+          User tn18624
+          IdentityFile $KEY_FILE
+          ProxyJump bastion
+          StrictHostKeyChecking no
+          UserKnownHostsFile=/dev/null
+        EOF
 
             chmod 600 ~/.ssh/config
             chmod 600 "$KEY_FILE"
 
             echo "[INFO] Running Ansible playbook..."
             cd ansible
-            ansible-playbook ./playbooks/deploy.yml -i ./inventories/webs.ini
+            ansible-playbook ./playbooks/deploy.yml -i ./inventories/webs.ini -vvvv
           '''
         }
+
       }
     }
   }
