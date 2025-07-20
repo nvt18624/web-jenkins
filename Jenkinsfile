@@ -35,7 +35,7 @@ pipeline {
           cp "$KEY_FILE" ~/.ssh/gg_cloud
           chmod 600 ~/.ssh/gg_cloud
 
-          echo $SSH_CONFIG > ~/.ssh/config
+          cp $SSH_CONFIG ~/.ssh/config
           cat ~/.ssh/config
           chmod 600 ~/.ssh/config
 
