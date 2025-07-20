@@ -6,6 +6,8 @@ pipeline {
     VAULT_ROLE_ID   = credentials('VAULT_ROLE_ID')
     VAULT_SECRET_ID = credentials('VAULT_SECRET_ID')
     PRIVATE_KEY     = credentials('GG_CLOUD_PRIVATE')
+    SERVER1     = credentials('SERVER1')
+    SERVER2     = credentials('SERVER2')
   }
 
   stages {
