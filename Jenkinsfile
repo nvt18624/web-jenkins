@@ -5,6 +5,8 @@ pipeline {
     VAULT_ADDR      = credentials('VAULT_ADDR')
     VAULT_ROLE_ID   = credentials('VAULT_ROLE_ID')
     VAULT_SECRET_ID = credentials('VAULT_SECRET_ID')
+    KEY_FILE = credentials('GG_CLOUD_PRIVATE')
+    SSH_CONFIG = credentials('SSH_CONFIG')
   }
 
   stages {
@@ -24,42 +26,20 @@ pipeline {
     stage('Ansible Deploy') {
       steps {
         unstash 'env-file'
+        sh '''
+          echo "[INFO] Using SSH key"
+          cp "$KEY_FILE" /tmp/gg_cloud
+          chmod 600 /tmp/gg_cloud
 
-        withCredentials([
-          sshUserPrivateKey(credentialsId: 'GG_CLOUD_PRIVATE', keyFileVariable: 'KEY_FILE')
-        ]) {
-          sh '''
-            echo "[INFO] Using SSH key at $KEY_FILE"
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo $SSH_CONFIG > ~./ssh/config
+          chmod 600 ~/.ssh/config
 
-            mkdir -p ~/.ssh
-            chmod 700 ~/.ssh
-
-            echo "[INFO] Writing SSH config..."
-            cat << EOF > ~/.ssh/config
-        Host bastion
-          HostName 34.66.23.89
-          User tn18624
-          IdentityFile $KEY_FILE
-          StrictHostKeyChecking no
-          UserKnownHostsFile=/dev/null
-
-        Host 10.0.2.*
-          User tn18624
-          IdentityFile $KEY_FILE
-          ProxyJump bastion
-          StrictHostKeyChecking no
-          UserKnownHostsFile=/dev/null
-        EOF
-
-            chmod 600 ~/.ssh/config
-            chmod 600 "$KEY_FILE"
-
-            echo "[INFO] Running Ansible playbook..."
-            cd ansible
-            ansible-playbook ./playbooks/deploy.yml -i ./inventories/webs.ini -vvvv
-          '''
-        }
-
+          echo "[INFO] Running Ansible playbook..."
+          cd ansible
+          ansible-playbook ./playbooks/deploy.yml -i ./inventories/webs.ini -vvvv
+        '''
       }
     }
   }
