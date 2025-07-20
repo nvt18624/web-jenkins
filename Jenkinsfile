@@ -33,7 +33,8 @@ pipeline {
 
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          echo $SSH_CONFIG > ~./ssh/config
+          echo $SSH_CONFIG > ~/.ssh/config
+          cat ~/.ssh/config
           chmod 600 ~/.ssh/config
 
           echo "[INFO] Running Ansible playbook..."
