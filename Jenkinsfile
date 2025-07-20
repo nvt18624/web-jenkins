@@ -28,11 +28,13 @@ pipeline {
         unstash 'env-file'
         sh '''
           echo "[INFO] Using SSH key"
-          cp "$KEY_FILE" /tmp/gg_cloud
-          chmod 600 /tmp/gg_cloud
 
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
+
+          cp "$KEY_FILE" ~/.ssh/gg_cloud
+          chmod 600 ~/.ssh/gg_cloud
+
           echo $SSH_CONFIG > ~/.ssh/config
           cat ~/.ssh/config
           chmod 600 ~/.ssh/config
