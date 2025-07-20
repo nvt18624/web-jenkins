@@ -31,6 +31,7 @@ pipeline {
           cd ansible
           echo "$SERVER1" >> ./inventories/webs.ini
           echo "$SERVER2" >> ./inventories/webs.ini
+          cat ./inventories/webs.ini
           ansible-playbook ./playbooks/deploy.yml \
             -i ./inventories/webs.ini \
             --private-key $PRIVATE_KEY
