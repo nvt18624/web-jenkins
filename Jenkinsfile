@@ -33,7 +33,8 @@ pipeline {
           chmod 600 "$KEY_FILE"
           cd ansible
           ansible-playbook ./playbooks/deploy.yml \
-            -i ./inventories/webs.ini 
+            -i ./inventories/webs.ini \
+            --private-key "$KEY_FILE"
         '''
         }
       }
