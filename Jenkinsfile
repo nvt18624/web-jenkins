@@ -5,7 +5,6 @@ pipeline {
     VAULT_ADDR      = credentials('VAULT_ADDR')
     VAULT_ROLE_ID   = credentials('VAULT_ROLE_ID')
     VAULT_SECRET_ID = credentials('VAULT_SECRET_ID')
-    PRIVATE_KEY     = credentials('GG_CLOUD_PRIVATE')
   }
 
   stages {
@@ -22,17 +21,22 @@ pipeline {
       }
     }
 
-    stage('Ansible Deploy') {
-      steps {
-        unstash 'env-file'
+  stage('Ansible Deploy') {
+    steps {
+      unstash 'env-file'
+
+      withCredentials([
+        sshUserPrivateKey(credentialsId: 'GG_CLOUD_PRIVATE', keyFileVariable: 'KEY_FILE')
+      ]) {
         sh '''
-          ls -al ./
-          ls -al ./app
+          echo "[INFO] Using SSH key at $KEY_FILE"
+          chmod 600 "$KEY_FILE"
           cd ansible
           ansible-playbook ./playbooks/deploy.yml \
             -i ./inventories/webs.ini \
-            --private-key $PRIVATE_KEY
+            --private-key "$KEY_FILE"
         '''
+        }
       }
     }
   }
