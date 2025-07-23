@@ -74,7 +74,7 @@
     dest: /etc/nginx/sites-available/flask-app
     content: |
       server {
-          listen 80;
+          listen 80 proxy_protocol;
           server_name _;
 
           real_ip_header proxy_protocol;
