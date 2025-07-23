@@ -54,6 +54,7 @@ def login():
         else:
             # Lấy IP từ X-Forwarded-For nếu qua reverse proxy, fallback sang remote_addr
             xff = request.headers.get('X-Forwarded-For')
+            logger.warning(f"Raw X-Forwarded-For: {xff}")
             ip = xff.split(',')[0].strip() if xff else request.remote_addr
             logger.warning(f"Login failed for username: {username}, IP: {ip}")
             error = "Incorrect username or password"
