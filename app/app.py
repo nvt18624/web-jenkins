@@ -4,9 +4,11 @@ from dotenv import load_dotenv
 import psycopg2
 import logging
 from logging.handlers import SysLogHandler
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
 
 # Load environment variables from .env file
 load_dotenv('.env')
@@ -29,13 +31,14 @@ def get_db_connection():
         password=os.getenv('db_password')
     )
 
-
 @app.route('/')
 def home():
     if 'user' in session:
         return render_template('home.html', user=session['user'])
     return redirect('/login')
 
+def get_client_ip():
+    return request.remote_addr
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -54,13 +57,10 @@ def login():
         else:
             # Lấy IP từ X-Forwarded-For nếu qua reverse proxy, fallback sang remote_addr
             xff = request.headers.get('X-Forwarded-For')
-            logger.warning(f"Raw X-Forwarded-For: {xff}")
-            ip = xff.split(',')[0].strip() if xff else request.remote_addr
-            logger.warning(f"Login failed for username: {username}, IP: {ip}")
+            logger.warning(f"[LOGIN FAIL] username={username}, ip={get_client_ip()}")
             error = "Incorrect username or password"
             return render_template('login.html', error=error)
     return render_template('login.html')
-
 
 @app.route('/logout')
 def logout():
