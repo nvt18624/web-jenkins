@@ -1,5 +1,16 @@
+- name: Remove incorrect repo from sources.list
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/apt/sources.list
+    regexp: '^.*bullseye-backports.*$'
+    state: absent
 
-- name: Cài đặt các package cần thiết
+- name: update system
+  become: true
+  apt:
+    update_cache: true
+
+- name: Install package
   apt:
     name:
       - python3
@@ -8,7 +19,7 @@
       - nginx
     update_cache: yes
 
-- name: Tạo thư mục ứng dụng
+- name: create folder /opt/flask-app
   file:
     path: /opt/flask-app
     state: directory
@@ -16,7 +27,7 @@
     group: www-data
     mode: '0755'
 
-- name: Copy Flask app lên server
+- name: copy flask app to the server
   copy:
     src: ../../../../app/
     dest: /opt/flask-app/
@@ -24,7 +35,7 @@
     group: www-data
     mode: '0755'
 
-- name: Tạo virtualenv và cài requirements
+- name: create virtualenv and install requirements
   shell: |
     python3 -m venv venv
     source venv/bin/activate
@@ -34,7 +45,7 @@
     chdir: /opt/flask-app/
     executable: /bin/bash
 
-- name: Tạo systemd service cho Gunicorn
+- name: creat systemd service for Gunicorn
   copy:
     dest: /etc/systemd/system/flask-app.service
     content: |
@@ -58,13 +69,13 @@
     systemctl enable flask-app
     systemctl restart flask-app
 
-- name: Cấu hình Nginx reverse proxy
+- name: configure Nginx reverse proxy
   copy:
     dest: /etc/nginx/sites-available/flask-app
     content: |
       server {
           listen 80;
-          server_name 34.70.98.212;
+          server_name _;
 
           location / {
               include proxy_params;
@@ -79,7 +90,7 @@
     state: link
     force: yes
 
-- name: Xóa default site của Nginx nếu có
+- name: delete default nginx folder
   file:
     path: /etc/nginx/sites-enabled/default
     state: absent
