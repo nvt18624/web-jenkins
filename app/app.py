@@ -41,7 +41,7 @@ def home():
 def login():
     if request.method == 'POST':
         username = request.form['username']
-        password = request.form['password']  
+        password = request.form['password']
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
@@ -52,7 +52,10 @@ def login():
             session['user'] = username
             return redirect('/')
         else:
-            logger.warning(f"Login failed for username: {username}, IP: {request.remote_addr}")
+            # Lấy IP từ X-Forwarded-For nếu qua reverse proxy, fallback sang remote_addr
+            xff = request.headers.get('X-Forwarded-For')
+            ip = xff.split(',')[0].strip() if xff else request.remote_addr
+            logger.warning(f"Login failed for username: {username}, IP: {ip}")
             error = "Incorrect username or password"
             return render_template('login.html', error=error)
     return render_template('login.html')
