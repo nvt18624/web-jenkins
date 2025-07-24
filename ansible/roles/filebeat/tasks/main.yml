@@ -1,35 +1,28 @@
-- name: update system
-  become: true
-  apt:
-    update_cache: true
-
-- name: Check if Elastic APT source list file exists
-  stat:
-    path: /etc/apt/sources.list.d/elastic-9.x.list
-  register: elastic_repo_file
-
-- name: Download Elastic GPG key
-  ansible.builtin.get_url:
-    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-    dest: /usr/share/keyrings/elastic-keyring.gpg
-    mode: '0644'
-  become: true
-  # when: not elastic_repo_file.stat.exists
-
 - name: Ensure apt-transport-https is installed
-  ansible.builtin.apt:
+  apt:
     name: apt-transport-https
     state: present
-    update_cache: yes
-  # when: not elastic_repo_file.stat.exists
+    update_cache: true
+  become: true
+
+- name: Download and dearmor Elastic GPG key
+  shell: |
+    curl -s https://artifacts.elastic.co/GPG-KEY-elasticsearch | gpg --dearmor -o /usr/share/keyrings/elastic-keyring.gpg
+  args:
+    creates: /usr/share/keyrings/elastic-keyring.gpg
+  become: true
 
 - name: Add Elastic APT repository
-  ansible.builtin.apt_repository:
+  apt_repository:
     repo: "deb [signed-by=/usr/share/keyrings/elastic-keyring.gpg] https://artifacts.elastic.co/packages/9.x/apt stable main"
-    filename: elastic-9.x
+    filename: "elastic-9.x"
     state: present
   become: true
-  # when: not elastic_repo_file.stat.exists
+
+- name: Update apt cache
+  apt:
+    update_cache: true
+  become: true
 
 - name: Instasll filebeat
   ansible.builtin.apt:
