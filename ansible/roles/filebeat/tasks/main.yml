@@ -8,24 +8,28 @@
     path: /etc/apt/sources.list.d/elastic-9.x.list
   register: elastic_repo_file
 
-- name: Download and install the Public Signing Key
-  ansible.builtin.shell: | 
-    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+- name: Download Elastic GPG key
+  ansible.builtin.get_url:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    dest: /usr/share/keyrings/elastic-keyring.gpg
+    mode: '0644'
   become: true
-  when: not elastic_repo_file.stat.exists
+  # when: not elastic_repo_file.stat.exists
 
 - name: Ensure apt-transport-https is installed
   ansible.builtin.apt:
     name: apt-transport-https
     state: present
     update_cache: yes
-  when: not elastic_repo_file.stat.exists
+  # when: not elastic_repo_file.stat.exists
 
 - name: Add Elastic APT repository
   ansible.builtin.apt_repository:
     repo: "deb [signed-by=/usr/share/keyrings/elastic-keyring.gpg] https://artifacts.elastic.co/packages/9.x/apt stable main"
     filename: elastic-9.x
-  when: not elastic_repo_file.stat.exists
+    state: present
+  become: true
+  # when: not elastic_repo_file.stat.exists
 
 - name: Instasll filebeat
   ansible.builtin.apt:
