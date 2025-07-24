@@ -7,16 +7,8 @@
 
 - name: Download and dearmor Elastic GPG key
   shell: |
-    curl -s https://artifacts.elastic.co/GPG-KEY-elasticsearch | gpg --dearmor -o /usr/share/keyrings/elastic-keyring.gpg
-  args:
-    creates: /usr/share/keyrings/elastic-keyring.gpg
-  become: true
-
-- name: Add Elastic APT repository
-  apt_repository:
-    repo: "deb [signed-by=/usr/share/keyrings/elastic-keyring.gpg] https://artifacts.elastic.co/packages/9.x/apt stable main"
-    filename: "elastic-9.x"
-    state: present
+    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
+    echo "deb https://artifacts.elastic.co/packages/9.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-9.x.list
   become: true
 
 - name: Update apt cache
