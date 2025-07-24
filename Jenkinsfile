@@ -26,8 +26,6 @@ pipeline {
       steps {
         unstash 'env-file'
         sh '''
-          ls -al ./
-          ls -al ./app
           cd ansible
           echo "$SERVER1" >> ./inventories/webs.ini
           echo "$SERVER2" >> ./inventories/webs.ini

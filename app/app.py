@@ -31,14 +31,17 @@ def get_db_connection():
         password=os.getenv('db_password')
     )
 
+
 @app.route('/')
 def home():
     if 'user' in session:
         return render_template('home.html', user=session['user'])
     return redirect('/login')
 
+
 def get_client_ip():
     return request.remote_addr
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -53,14 +56,14 @@ def login():
         conn.close()
         if user:
             session['user'] = username
+            logger.warning(f"[LOGIN SUCCESSFUL] username={username}, ip={get_client_ip()}")
             return redirect('/')
         else:
-            # Lấy IP từ X-Forwarded-For nếu qua reverse proxy, fallback sang remote_addr
-            xff = request.headers.get('X-Forwarded-For')
             logger.warning(f"[LOGIN FAIL] username={username}, ip={get_client_ip()}")
             error = "Incorrect username or password"
             return render_template('login.html', error=error)
     return render_template('login.html')
+
 
 @app.route('/logout')
 def logout():

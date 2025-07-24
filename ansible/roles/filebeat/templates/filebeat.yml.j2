@@ -1,0 +1,8 @@
+filebeat.inputs:
+- type: filestream
+  enabled: true
+  paths:
+    - /var/log/syslog
+
+output.logstash:
+  hosts: ["{{ server_ki }}:5044"]
