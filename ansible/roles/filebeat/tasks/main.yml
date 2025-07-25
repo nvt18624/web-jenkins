@@ -5,7 +5,7 @@
     update_cache: true
   become: true
 
-- name: Download and dearmor Elastic GPG key
+- name: Download and install the Public Signing Key and Save the repository definition
   shell: |
     wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
     echo "deb https://artifacts.elastic.co/packages/9.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-9.x.list
