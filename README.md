@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./images/jenkins.png" alt="Diagram System" width="70%" />
+  <img src="./images/jenkins-pipeline.png" alt="Diagram System" width="70%" />
   <br/>
   <em>Figure 1: Pipeline Jenkin CI/CD</em>
 </p>
