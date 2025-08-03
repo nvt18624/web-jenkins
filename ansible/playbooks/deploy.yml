@@ -2,5 +2,6 @@
   hosts: webs
   become: true
   roles:
-    - app
+    # - app
+    - esp32
     - filebeat

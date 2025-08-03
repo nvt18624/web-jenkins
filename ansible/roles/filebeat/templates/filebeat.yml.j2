@@ -3,6 +3,7 @@ filebeat.inputs:
   enabled: true
   paths:
     - /var/log/syslog
+    - /var/log/esp32_distance.log
 
 output.logstash:
   hosts: ["{{ server_ki }}:5044"]

@@ -45,6 +45,11 @@
     name: filebeat.service
     state: started
 
+- name: restart filebeat service
+  ansible.builtin.systemd:
+    name: filebeat.service
+    state: restarted
+
 - name: Run filebeat test output
   shell: filebeat test output
   register: test_output
