@@ -2,7 +2,6 @@ filebeat.inputs:
 - type: filestream
   enabled: true
   paths:
-    - /var/log/syslog
     - /var/log/esp32_distance.log
 
 output.logstash:
